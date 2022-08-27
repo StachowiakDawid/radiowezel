@@ -79,11 +79,7 @@ export class SongsResolver {
           await this.songsService
             .add(id, result.data.items[0].snippet.title)
             .then((response) => {
-              if (!response) {
-                returnMessage = 'The song is already added';
-              } else {
-                returnMessage = 'Added';
-              }
+              returnMessage = !response ? 'The song is already added' : 'Added';
             });
         } else {
           returnMessage = "The video doesn't exist or is unavailable";

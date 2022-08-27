@@ -34,9 +34,7 @@ const MainPage: FC<MainPageProps> = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
-    if (data) {
-      dispatch(setVoteList([...data.songs]));
-    }
+    data && dispatch(setVoteList([...data.songs]));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 

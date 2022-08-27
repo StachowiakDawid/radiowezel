@@ -7,13 +7,7 @@ import { setVoteList } from '../../redux/voteListSlice';
 
 interface AddItemModalProps { }
 const getYoutubeVideoId = (url: string): string => {
-    let regex = /(youtu.*be.*)\/(watch\?v=|embed\/|v|shorts|)(.*?((?=[&#?])|$))/gm;
-    let id = regex.exec(url)?.[3];
-    if (id) {
-        return id;
-    } else {
-        return '';
-    }
+    return /(youtu.*be.*)\/(watch\?v=|embed\/|v|shorts|)(.*?((?=[&#?])|$))/gm.exec(url)?.[3] ?? '';
 }
 
 const AddItemModal: FC<AddItemModalProps> = (props) => {
@@ -38,11 +32,7 @@ const AddItemModal: FC<AddItemModalProps> = (props) => {
         addSong({ variables: { id: getYoutubeVideoId(input) } }).then(async (response) => {
             const data = await getVoteList();
             dispatch(setVoteList([...data.data.songs]));
-            if (response.data.addSong === 'Added') {
-                handleClose();
-            } else {
-                setFormMessage(response.data.addSong);
-            }
+            response.data.addSong === 'Added' ? handleClose() : setFormMessage(response.data.addSong);
         });
     }
 
