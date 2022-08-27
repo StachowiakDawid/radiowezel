@@ -26,9 +26,9 @@ export class SongsService {
   async addVote(userId: string, videoId: string, type: string): Promise<Song> {
     const song = await this.songModel.findOne({ videoId: videoId });
     const votes = [...song.votes];
-    const currentVote = votes.filter((el) => el.userId === userId);
-    if (currentVote[0]) {
-      currentVote[0].type = type;
+    const currentVote = votes.find((el) => el.userId === userId);
+    if (currentVote) {
+      currentVote.type = type;
     } else {
       votes.push({ userId: userId, type: type });
     }

@@ -16,12 +16,13 @@ export class SongsResolver {
   ): Promise<Song[]> {
     const songsWithVotes: Song[] = [];
     (await this.songsService.getAll()).forEach(async (song) => {
-      const userAction = song.votes.filter((el) => el.userId === userId)[0];
+      const userAction = song.votes.find((el) => el.userId === userId);
+      const upvotes = song.votes.filter((el) => el.type === 'upvote').length;
       songsWithVotes.push({
         title: song.title,
         videoId: song.videoId,
-        upvotes: song.votes.filter((el) => el.type === 'upvote').length,
-        downvotes: song.votes.filter((el) => el.type === 'downvote').length,
+        upvotes: upvotes,
+        downvotes: song.votes.length - upvotes,
         userAction: userAction ? userAction.type : 'none',
       });
     });
