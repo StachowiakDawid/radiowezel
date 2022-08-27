@@ -3,6 +3,7 @@ import { Song } from 'src/songs/Song.model';
 import { SongsService } from './songs.service';
 import { YT_API_KEY } from '../../constants';
 import { HttpService } from '@nestjs/axios';
+import { lastValueFrom } from 'rxjs';
 
 @Resolver()
 export class SongsResolver {
@@ -70,22 +71,20 @@ export class SongsResolver {
     params.append('part', 'snippet');
     params.append('id', id);
     let returnMessage = '';
-    await this.httpService
-      .get(url, {
+    const result = await lastValueFrom(
+      this.httpService.get(url, {
         params: params,
-      })
-      .toPromise()
-      .then(async (result) => {
-        if (result.data.items[0]) {
-          await this.songsService
-            .add(id, result.data.items[0].snippet.title)
-            .then((response) => {
-              returnMessage = !response ? 'The song is already added' : 'Added';
-            });
-        } else {
-          returnMessage = "The video doesn't exist or is unavailable";
-        }
-      });
+      }),
+    );
+    if (result.data.items[0]) {
+      await this.songsService
+        .add(id, result.data.items[0].snippet.title)
+        .then((response) => {
+          returnMessage = !response ? 'The song is already added' : 'Added';
+        });
+    } else {
+      returnMessage = "The video doesn't exist or is unavailable";
+    }
     return returnMessage;
   }
 }
